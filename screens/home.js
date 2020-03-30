@@ -187,23 +187,13 @@ const fetchData = async()=>{
     }
   };
 
-  if(loading)
-    return( 
-     <View style ={{flex:1}}>      
-     <View style={styles.content}>
-      <View style={styles.list}>
-      <Loader/>
-      </View>
-      <Button onPress={fetchData} title="Refresh"/>
-
-    </View>
-    </View>
-
-      
-      )
+ 
   return (
-    <View style ={{flex:1}}>      
-    <ConLabel connected = {online} fetchData={fetchData}/>
+    <View style ={{flex:1}}>
+
+ { loading? <Loader/>:( 
+     <View style={{flex:1}}>
+      <ConLabel connected = {online} fetchData={fetchData}/>
      <View style={styles.content}>
       <AddTodo submitHandler={submitHandler} />
       <View style={styles.list}>
@@ -220,7 +210,11 @@ const fetchData = async()=>{
           )}
         />
       </View>
-      <Button onPress={fetchData} title="Refresh"/>
+    </View>
+    </View>
+    )}
+    <View style={{padding: 40}}>
+    <Button onPress={fetchData} title="Refresh"/>
 
     </View>
     </View>
@@ -231,17 +225,15 @@ const fetchData = async()=>{
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff"
+    backgroundColor: "#fff",
   },
   content: {
     padding: 40,
     flex: 1
   },
   list: {
-    marginTop: 20,
+    marginTop: 25,
     flex: 1,
-    marginBottom: 20,
-
   }
 });
 

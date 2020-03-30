@@ -9,14 +9,17 @@ import {
 } from "react-native";
 import Navigator from "./routes/homeStack";
 import { SplashScreen } from 'expo';
+import config from './config'
+import * as firebase from 'firebase'
 
 
-
+if (!firebase.apps.length) {
+  console.log("initializeApp-----------------")
+  firebase.initializeApp(config)
+}
 export default function App() {
-  
   // SplashScreen.preventAutoHide()
-
-
+  
   console.disableYellowBox = true;
   return (
     <TouchableWithoutFeedback
@@ -33,7 +36,6 @@ export default function App() {
       </View>
     </TouchableWithoutFeedback>
 
-    
   );
 }
 
@@ -43,7 +45,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff"
   },
   content: {
-    // padding: 40,
     flex: 1
   }
 });

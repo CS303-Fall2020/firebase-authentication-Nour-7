@@ -1,18 +1,15 @@
 import React, { useState } from "react";
+import { StackActions } from '@react-navigation/native';
 import { StyleSheet, View, TextInput, Button, Alert, Text, totchabl } from "react-native";
-import {auth} from "../Auth/auth";
+import * as firebase from 'firebase'
+import NavButtons from '../components/navButtons'
 
 
 export default function Signup({navigation}) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [conPassword, setConPassword] = useState("");
-  const [errorMsg, setErrorMsg] = useState("");
-
-
-  
-
-
+ 
   const submitHandler = () => {
     if(email != "" && password != "" && conPassword != ""){
         if (conPassword == password) {
@@ -28,25 +25,16 @@ export default function Signup({navigation}) {
           { text: "Understood", onPress: () => console.log("alert closed") }
         ]);
       }
-
-   
   };
 
 const signup = async (email, pass) => {
 
     try {
-        await auth.createUserWithEmailAndPassword(email, pass);
+        await firebase.auth().createUserWithEmailAndPassword(email, pass);
 
         console.log("Account created");
-
-        navigation.reset({
-            index: 0,
-            routes: [{ name: 'Home' }],
-          }); 
-        // Navigate to the Home page, the user is auto logged in
-
+        navigation.dispatch(StackActions.replace('Home'));
     } catch (error) {
-        setErrorMsg(error.toString())
         Alert.alert(error.name, error.message, [
             { text: "Understood", onPress: () => console.log("alert closed") }
           ]);
@@ -67,61 +55,50 @@ const signup = async (email, pass) => {
     setConPassword(val);
   };
 
-const Signup = () => {
-    navigation.reset({
-        index: 0,
-        routes: [{ name: 'Signup' }],
-      });
+  const Signup = () => {
+    navigation.dispatch(StackActions.replace('Signup'));
 };
 const Login = () => {
-    navigation.reset({
-        index: 0,
-        routes: [{ name: 'Login' }],
-      });
+    navigation.dispatch(StackActions.replace('Login' ));
+
 };
 const ForgetPass = () => {
-    navigation.reset({
-        index: 0,
-        routes: [{ name: 'ForgetPass' }],
-      });
+    navigation.dispatch(StackActions.replace('ForgetPass' ));
 };
+
   return (
     <View style= {styles.container}>
-    <View style= {{flex:1, marginTop: 40}}>
-    <Text>SignUp</Text>
-      <TextInput
-        style={styles.input}
-        autoCapitalize = 'none'
-        placeholder="email"
-        onChangeText={changeEmail}
-      />
-      <TextInput
-        style={styles.input}
-        autoCapitalize = 'none'
-        placeholder="password"
-        onChangeText={changePassword}
-        secureTextEntry={true}
+      <View style= {{flex:1, marginTop: 40}}>
+      <Text>SignUp</Text>
+        <TextInput
+          style={styles.input}
+          autoCapitalize = 'none'
+          placeholder="email"
+          onChangeText={changeEmail}
+          value={email}
+        />
+        <TextInput
+          style={styles.input}
+          autoCapitalize = 'none'
+          placeholder="password"
+          onChangeText={changePassword}
+          secureTextEntry={true}
+          value={password}
 
-      />
-      <TextInput
-        secureTextEntry={true}
-        autoCapitalize = 'none'
-        style={styles.input}
-        placeholder="confirm password"
-        onChangeText={changeConPassword}
-      />
-        <Text style={{padding:10}}></Text>
+        />
+        <TextInput
+          secureTextEntry={true}
+          autoCapitalize = 'none'
+          style={styles.input}
+          placeholder="confirm password"
+          onChangeText={changeConPassword}
+          value={conPassword}
+        />
+          <Text style={{padding:10}}></Text>
 
-      <Button  onPress={submitHandler} title="SIGNUP" />
-</View>
-<View style= {{flex:1, marginTop: 40}}>
-      <View style={styles.nav}>
-      <Button color="#228B22" onPress={Login} title="LOGIN" />
+        <Button  onPress={submitHandler} title="SIGNUP" />
       </View>
-      <View style={styles.nav}>
-      <Button color="#228B22" onPress={ForgetPass} title="FORGET PASSWORD" />
-      </View>
-     </View>
+      <NavButtons  button1={{screen:Login, text:"LOGIN"}} button2={{screen:ForgetPass, text:"FORGET PASSWORD"}}/>
     </View>
   );
 }

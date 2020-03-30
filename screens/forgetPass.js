@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import { StackActions } from '@react-navigation/native';
 import { StyleSheet, View, TextInput, Button, Alert, Text } from "react-native";
-import {auth} from "../Auth/auth";
+import * as firebase from 'firebase'
+import NavButtons from '../components/navButtons'
 
 
 export default function ForgetPass({navigation}) {
@@ -23,7 +25,7 @@ export default function ForgetPass({navigation}) {
 const forget = async (email, pass) => {
 
     try {
-        await auth.sendPasswordResetEmail(email);
+        await firebase.auth().sendPasswordResetEmail(email);
         setText("Email was sent successfully, please follow the instruction to reset your password")
         console.log("Email sent");
 
@@ -37,46 +39,36 @@ const forget = async (email, pass) => {
 
 }
 
-
   const changeEmail = val => {
     setEmail(val);
   };
 
   const Signup = () => {
-    navigation.reset({
-        index: 0,
-        routes: [{ name: 'Signup' }],
-      });
+    navigation.dispatch(StackActions.replace('Signup' ));
 };
 const Login = () => {
-    navigation.reset({
-        index: 0,
-        routes: [{ name: 'Login' }],
-      });
+    navigation.dispatch(StackActions.replace('Login' ));
+
+};
+const ForgetPass = () => {
+    navigation.dispatch(StackActions.replace('ForgetPass' ));
 };
 
 return (
   <View style= {styles.container}>
-  <View style= {{flex:1, marginTop: 40}}>
-  <Text>Forget Password?</Text>
-    <TextInput
-      style={styles.input}
-      autoCapitalize = 'none'
-      placeholder="email"
-      onChangeText={changeEmail}
-    />
-    
-    <Text style={{padding:10}}>{text}</Text>
-    <Button  onPress={submitHandler} title="SEND RESET EMAIL" />
-</View>
-<View style= {{flex:1, marginTop: 40}}>
-    <View style={styles.nav}>
-    <Button color="#228B22" onPress={Signup} title="Signup" />
-    </View>
-    <View style={styles.nav}>
-    <Button color="#228B22" onPress={Login} title="Login" />
-    </View>
-   </View>
+      <View style= {{flex:1, marginTop: 40}}>
+      <Text>Forget Password?</Text>
+        <TextInput
+          style={styles.input}
+          autoCapitalize = 'none'
+          placeholder="email"
+          onChangeText={changeEmail}
+        />
+        
+        <Text style={{padding:10}}>{text}</Text>
+        <Button  onPress={submitHandler} title="SEND RESET EMAIL" />
+        </View>
+        <NavButtons button1={{screen:Signup, text:"SIGNUP"}} button2={{screen:Login, text:"LOGIN"}}/>
   </View>
 );
 }

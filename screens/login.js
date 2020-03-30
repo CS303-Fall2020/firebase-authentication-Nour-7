@@ -1,15 +1,15 @@
 import React, { useState } from "react";
+import { StackActions } from '@react-navigation/native';
+
 import { StyleSheet, View, TextInput, Button, Alert, Text } from "react-native";
-import {auth} from "../Auth/auth";
+import * as firebase from 'firebase'
 import Loader from '../components/loader';
-
-
+import NavButtons from '../components/navButtons'
 export default function Login({navigation}) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false)
 
-  
 
 
   const submitHandler = () => {
@@ -21,8 +21,6 @@ export default function Login({navigation}) {
           { text: "Understood", onPress: () => console.log("alert closed") }
         ]);
       }
-
-   
   };
 
 const signin = async (email, pass) => {
@@ -31,15 +29,10 @@ const signin = async (email, pass) => {
         setLoading(()=>{
             return true
           })    
-        await auth.signInWithEmailAndPassword(email, pass);
+        await firebase.auth().signInWithEmailAndPassword(email, pass);
 
         console.log("Logged In!");
-        navigation.reset({
-            index: 0,
-            routes: [{ name: 'Home' }],
-          });
-        // Navigate to the Home page, the user is auto logged in
-
+        navigation.dispatch(StackActions.replace('Home'));
     } catch (error) {
         Alert.alert(error.name, error.message, [
             { text: "Understood", onPress: () => console.log("alert closed") }
@@ -51,86 +44,51 @@ const signin = async (email, pass) => {
     }
 
 }
-
-
   const changeEmail = val => {
     setEmail(val);
   };
   const changePassword = val => {
     setPassword(val);
   };
-
-
   const Signup = () => {
-    navigation.reset({
-        index: 0,
-        routes: [{ name: 'Signup' }],
-      });
-};
-const Login = () => {
-    navigation.reset({
-        index: 0,
-        routes: [{ name: 'Login' }],
-      });
-};
-const ForgetPass = () => {
-    navigation.reset({
-        index: 0,
-        routes: [{ name: 'ForgetPass' }],
-      });
-};
+        navigation.dispatch(StackActions.replace('Signup' ));
+  };
+  const ForgetPass = () => {
+        navigation.dispatch(StackActions.replace('ForgetPass' ));
+  };
 
-if(loading)
+
 
 return (
     <View style= {styles.container}>
-    <View style= {{flex:1, marginTop: 40}}>
-    <Loader/>
-    </View>
-<View style= {{flex:1, marginTop: 40}}>
-      <View style={styles.nav}>
-      <Button color="#228B22" onPress={Signup} title="Signup" />
+      <View style= {{flex:1, marginTop: 40}}>
+       
+       {loading? <Loader/>
+       :( 
+        <View>
+          <Text>Login</Text>
+          <TextInput
+            style={styles.input}
+            autoCapitalize = 'none'
+            placeholder="email"
+            onChangeText={changeEmail}
+            value={email}
+          />
+          <TextInput
+            style={styles.input}
+            autoCapitalize = 'none'
+            placeholder="password"
+            textContentType= "password"
+            secureTextEntry={true}
+            onChangeText={changePassword}
+            value={password}
+          />
+          <Text style={{padding:10}}></Text>
+          <Button  onPress={submitHandler} title="LOGIN" />
+        </View>
+       )}
       </View>
-      <View style={styles.nav}>
-      <Button color="#228B22" onPress={ForgetPass} title="FORGET PASSWORD" />
-      </View>
-     </View>
-    </View>
-  );
-
-return (
-    <View style= {styles.container}>
-    <View style= {{flex:1, marginTop: 40}}>
-    <Text>Login</Text>
-      <TextInput
-        style={styles.input}
-        autoCapitalize = 'none'
-        placeholder="email"
-        onChangeText={changeEmail}
-        value={email}
-      />
-      <TextInput
-        style={styles.input}
-        autoCapitalize = 'none'
-        placeholder="password"
-        textContentType= "password"
-        secureTextEntry={true}
-        onChangeText={changePassword}
-        value={password}
-      />
-     
-     <Text style={{padding:10}}></Text>
-
-      <Button  onPress={submitHandler} title="LOGIN" />
-</View>
-<View style= {{flex:1, marginTop: 40}}>
-      <View style={styles.nav}>
-      <Button color="#228B22" onPress={Signup} title="Signup" />
-      </View>
-      <View style={styles.nav}>
-      <Button color="#228B22" onPress={ForgetPass} title="FORGET PASSWORD" />
-      </View>
-     </View>
+      <NavButtons button1={{screen:Signup, text:"SIGNUP"}} button2={{screen:ForgetPass, text:"FORGET PASSWORD"}}/>
     </View>
   );
 }
@@ -146,7 +104,6 @@ const styles = StyleSheet.create({
     marginTop: 70,
 },
   input: {
-    // flex: 1,
     marginTop: 10,
     marginBottom: 10,
     paddingHorizontal: 8,
@@ -155,3 +112,4 @@ const styles = StyleSheet.create({
     borderBottomColor: "#32CD32"
   }
 });
+

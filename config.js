@@ -1,5 +1,4 @@
-import Firebase from 'firebase';
-let config = {
+export default config = {
     apiKey: "AIzaSyA37ECoa-mGI47yfI9C9TPyQqK8IJXf32k",
     authDomain: "todos-832d7.firebaseapp.com",
     databaseURL: "https://todos-832d7.firebaseio.com",
@@ -8,5 +7,3 @@ let config = {
     messagingSenderId: "166306947904",
     appId: "1:166306947904:web:79972bcd7d219ecca150a5"
 };
-let app = Firebase.initializeApp(config);
-export const db = app.database();
